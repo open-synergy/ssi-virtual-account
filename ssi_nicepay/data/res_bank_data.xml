@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bmri" model="res.bank">
+        <field name="nicepay_bank_code">BMRI</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_ibbk" model="res.bank">
+        <field name="nicepay_bank_code">IBBK</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bbba" model="res.bank">
+        <field name="nicepay_bank_code">BBBA</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bbbb" model="res.bank">
+        <field name="nicepay_bank_code">BBBB</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_cena" model="res.bank">
+        <field name="nicepay_bank_code">CENA</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bnin" model="res.bank">
+        <field name="nicepay_bank_code">BNIN</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_hnbn" model="res.bank">
+        <field name="nicepay_bank_code">HNBN</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_brin" model="res.bank">
+        <field name="nicepay_bank_code">BRIN</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bnia" model="res.bank">
+        <field name="nicepay_bank_code">BNIA</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bdin" model="res.bank">
+        <field name="nicepay_bank_code">BDIN</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bjb" model="res.bank">
+        <field name="nicepay_bank_code">PDJB</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_yudb" model="res.bank">
+        <field name="nicepay_bank_code">YUDB</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_bdki" model="res.bank">
+        <field name="nicepay_bank_code">BDKI</field>
+    </record>
+    <record id="ssi_l10n_id_partner_bank.res_bank_othr" model="res.bank">
+        <field name="nicepay_bank_code">OTHR</field>
+    </record>
+</odoo>
