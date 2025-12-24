@@ -1,0 +1,26 @@
+# Do NOT update manually; changes here will be overwritten by Copier
+_commit: c749e42
+_src_path: gh:open-synergy/ssi-addons-repo-template
+ci: GitHub
+convert_readme_fragments_to_markdown: true
+enable_checklog_odoo: true
+generate_requirements_txt: true
+github_check_license: false
+github_ci_extra_env: {}
+github_enable_codecov: false
+github_enable_makepot: true
+github_enable_stale_action: false
+github_enforce_dev_status_compatibility: false
+include_wkhtmltopdf: false
+odoo_test_flavor: Both
+odoo_version: 14.0
+org_name: PT. Simetri Sinergi Indonesia (SSI)
+org_slug: SSI
+rebel_module_groups: []
+repo_description: ''
+repo_name: ''
+repo_slug: ssi-virtual-account
+repo_website: https://github.com/open-synergy/ssi-virtual-account
+use_pyproject_toml: true
+use_ruff: false
+
