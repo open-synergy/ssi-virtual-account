@@ -17,6 +17,12 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="nicepay.merchant_key",
         inverse="_inverse_nicepay_merchant_key",
     )
+    nicepay_journal_id = fields.Many2one(
+        string="# Journal",
+        comodel_name="account.journal",
+        config_parameter="nicepay.journal_id",
+        inverse="_inverse_nicepay_journal_id",
+    )
 
     def _inverse_nicepay_merchant_id(self):
         for record in self:
@@ -32,4 +38,12 @@ class ResConfigSettings(models.TransientModel):
             ICP.sudo().set_param(
                 "nicepay.merchant_key",
                 record.nicepay_merchant_key,
+            )
+
+    def _inverse_nicepay_journal_id(self):
+        for record in self:
+            ICP = self.env["ir.config_parameter"]
+            ICP.sudo().set_param(
+                "nicepay.journal_id",
+                record.nicepay_journal_id,
             )

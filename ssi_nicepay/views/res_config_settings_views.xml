@@ -17,6 +17,10 @@
                             <label string="Merchant Key" for="nicepay_merchant_key" />
                             <field name="nicepay_merchant_key" class="oe_inline" />
                         </div>
+                        <div class="o_setting_right_pane">
+                            <label string="Journal" for="nicepay_journal_id" />
+                            <field name="nicepay_journal_id" class="oe_inline" />
+                        </div>
                     </div>
                 </div>
             </xpath>
