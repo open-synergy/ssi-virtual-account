@@ -104,6 +104,7 @@ class NicepayEndpoint(http.Controller):
         vals = {
             "payment_type": "inbound",
             "partner_type": "customer",
+            "ref": payload.get("tXid"),
             "amount": payload.get("amt"),
             "partner_id": partner_id,
             "partner_bank_id": partner_bank_id,
