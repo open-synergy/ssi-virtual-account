@@ -1,0 +1,2 @@
+odoo14-addon-ssi-financial-accounting
+odoo14-addon-ssi-l10n-id-partner-bank

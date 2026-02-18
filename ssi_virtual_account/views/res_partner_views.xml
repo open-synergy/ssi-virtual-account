@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2025 OpenSynergy Indonesia
+     Copyright 2025 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+<odoo>
+<record id="view_partner_form" model="ir.ui.view">
+    <field name="name">res.partner form - Virtual Account</field>
+    <field name="model">res.partner</field>
+    <field name="priority" eval="1" />
+    <field name="inherit_id" ref="account.view_partner_property_form" />
+    <field name="arch" type="xml">
+        <xpath expr="//page[@name='accounting']/group[1]" position="before">
+            <button
+                    name="action_sync_virtual_account"
+                    string="Sync VA"
+                    type="object"
+                    icon="fa-refresh"
+                    class="oe_highlight"
+                    style="margin-right:4px"
+                />
+        </xpath>
+        <xpath expr="//page[@name='accounting']" position="after">
+            <page
+                    string="Virtual Account"
+                    name="virtual_account"
+                    attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}"
+                    groups="account.group_account_invoice,account.group_account_readonly"
+                >
+                <group name="va">
+                    <field name="va_customer_id" />
+                </group>
+                <field name="virtual_account_ids" nolabel="1">
+                    <tree create="false" edit="false" delete="false">
+                        <field name="bank_code" />
+                        <field name="va_number" />
+                        <field name="provider" />
+                        <field name="status" />
+                    </tree>
+                </field>
+            </page>
+            <page
+                    string="Virtual Account"
+                    name="virtual_account_disabled"
+                    attrs="{'invisible': ['|',('is_company','=',True),('parent_id','=',False)]}"
+                    groups="account.group_account_invoice,account.group_account_readonly"
+                >
+                <div>
+                    <p>Accounting-related settings are managed on <button
+                                name="open_commercial_entity"
+                                type="object"
+                                string="the parent company"
+                                class="oe_link"
+                            /></p>
+                </div>
+            </page>
+        </xpath>
+    </field>
+</record>
+</odoo>
