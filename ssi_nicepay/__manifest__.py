@@ -9,7 +9,7 @@
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "license": "AGPL-3",
     "installable": True,
-    "application": True,
+    "application": False,
     "depends": [
         "ssi_virtual_account",
         "ssi_l10n_id_partner_bank",

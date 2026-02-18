@@ -36,22 +36,6 @@ class NicepayEndpoint(http.Controller):
         try:
             payload = dict(request.params)
             request.env["ir.config_parameter"]
-            # iMid = ICP.sudo().get_param("nicepay.merchant_id")
-            # merchantKey = ICP.sudo().get_param("nicepay.merchant_key")
-
-            # value = iMid + merchantKey
-            # received_signature = payload.get("merchantToken")
-            # expected = hashlib.sha256(value.encode("utf-8")).hexdigest()
-
-            # if expected != received_signature:
-            #     log.level = "VALIDATION_ERROR"
-            #     log.message = str(payload)
-
-            #     return json.dumps({
-            #         "resultCd": "001",
-            #         "resultMsg": "Signature is not valid"
-            #     })
-            # else:
             self._process_notification(payload, log)
         except Exception as e:
             log.level = "ERROR"
