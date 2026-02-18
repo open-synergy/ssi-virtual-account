@@ -14,7 +14,12 @@
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[ssi_nicepay](ssi_nicepay/) | 14.0.1.0.0 |  | Nicepay Integration
+[ssi_virtual_account](ssi_virtual_account/) | 14.0.1.0.0 |  | SSI - Virtual Account
 
 [//]: # (end addons)
 
