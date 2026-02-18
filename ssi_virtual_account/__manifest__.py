@@ -9,7 +9,7 @@
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "license": "AGPL-3",
     "installable": True,
-    "application": True,
+    "application": False,
     "depends": [
         "ssi_financial_accounting",
     ],
