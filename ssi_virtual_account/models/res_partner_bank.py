@@ -9,7 +9,7 @@ class ResPartnerBank(models.Model):
 
     @api.model
     def _get_supported_account_types(self):
-        _super = super(ResPartnerBank, self)
+        _super = super()
         res = _super._get_supported_account_types()
         res += [("virtual_account", _("Virtual Account"))]
         return res
@@ -19,4 +19,4 @@ class ResPartnerBank(models.Model):
         if acc_number in self.partner_id.virtual_account_ids.mapped("va_number"):
             return "virtual_account"
         else:
-            return super(ResPartnerBank, self).retrieve_acc_type(acc_number)
+            return super().retrieve_acc_type(acc_number)
