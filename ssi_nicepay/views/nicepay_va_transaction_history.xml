@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="nicepay_va_transaction_history_view_search" model="ir.ui.view">
+    <field name="name">nicepay_va_transaction_history - search</field>
+    <field name="model">nicepay_va_transaction_history</field>
+    <field name="inherit_id"
+        ref="ssi_master_data_mixin.mixin_master_data_view_search" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="state" />
+            </xpath>
+            <xpath expr="//group[@name='dom_active']" position="before">
+                <filter
+                        name="dom_draft"
+                        string="Draft"
+                        domain="[('state', '=', 'draft')]"
+                    />
+                <filter
+                        name="dom_done"
+                        string="Done"
+                        domain="[('state', '=', 'done')]"
+                    />
+                <filter
+                        name="dom_failed"
+                        string="Failed"
+                        domain="[('state', '=', 'failed')]"
+                    />
+                <separator />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_transaction_history_view_tree" model="ir.ui.view">
+    <field name="name">nicepay_va_transaction_history - tree</field>
+    <field name="model">nicepay_va_transaction_history</field>
+    <field name="inherit_id"
+        ref="ssi_master_data_mixin.mixin_master_data_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//tree/header/button[@name='action_reset_code']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//tree/header/button[@name='action_generate_code']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//tree/header" position="inside">
+                <button
+                        name="action_process_notification"
+                        type="object"
+                        string="Process Notification"
+                        confirm="Process selected notification(s). Are you sure?"
+                    />
+            </xpath>
+            <xpath expr="//field[@name='code']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field
+                        name="state"
+                        widget="badge"
+                        decoration-success="state == 'done'"
+                        decoration-danger="state == 'failed'"
+                        decoration-info="state == 'draft'"
+                    />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_transaction_history_view_form" model="ir.ui.view">
+    <field name="name">nicepay_va_transaction_history - form</field>
+    <field name="model">nicepay_va_transaction_history</field>
+    <field name="inherit_id"
+        ref="ssi_master_data_mixin.mixin_master_data_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//header/button[@name='action_generate_code']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_generate_code']"
+                position="after">
+                <button
+                        name="action_process_notification"
+                        string="Process Notification"
+                        type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('state', '=', 'done')]}"
+                    />
+                <field
+                        name="state"
+                        widget="badge"
+                        decoration-success="state == 'done'"
+                        decoration-danger="state == 'failed'"
+                        decoration-info="state == 'draft'"
+                    />
+            </xpath>
+            <xpath expr="//notebook/page[@name='note']" position="before">
+                <page name="notification" string="Notification">
+                    <group name="notification_group_1">
+                        <field
+                                name="payment_id"
+                                attrs="{'invisible': [('payment_id', '=', False)]}"
+                            />
+                        <field
+                                name="processed_date"
+                                attrs="{'invisible': [('processed_date', '=', False)]}"
+                            />
+                    </group>
+                    <group
+                            name="notification_group_2"
+                            string="Error"
+                            attrs="{'invisible': [('error_message', '=', False)]}"
+                        >
+                        <field name="error_message" nolabel="1" colspan="4" />
+                    </group>
+                    <group name="notification_group_3" string="Raw Payload">
+                        <field name="payload" nolabel="1" colspan="4" />
+                    </group>
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_transaction_history_action" model="ir.actions.act_window">
+    <field name="name">Transaction Histories</field>
+    <field name="res_model">nicepay_va_transaction_history</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="nicepay_va_transaction_history_menu"
+        parent="menu_nicepay_root"
+        action="nicepay_va_transaction_history_action"
+    />
+</odoo>

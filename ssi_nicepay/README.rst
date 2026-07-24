@@ -6,6 +6,17 @@
 Nicepay Integration
 ===================
 
+Integrates Nicepay Virtual Account (VA) payment notifications with Odoo.
+Every VA notification received is stored under *Settings > Technical >
+Nicepay* together with its processing status, so the original payload is
+never lost even if processing fails; failed notifications can be
+reprocessed manually from there once the underlying issue is fixed.
+
+Settlement records pulled from Nicepay's Settlement History report API are
+stored the same way under *Settings > Technical > Nicepay* for
+bookkeeping/reconciliation reference; importing them is done by an
+on-site job outside this module.
+
 
 Installation
 ============

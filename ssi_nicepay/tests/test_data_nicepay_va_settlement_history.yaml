@@ -1,0 +1,138 @@
+scenarios:
+  - name: "Create Nicepay VA Settlement History - defaults"
+    steps:
+      - step: "Create a settlement record directly (mirrors what the on-site settlement job will do)"
+        action: "create"
+        model: "nicepay_va_settlement_history"
+        save_as: "settlement"
+        values:
+          name: "ionpaytest02202001100933358310"
+          code: "/"
+          response_code: "10"
+          settlement_date: "2020-01-13"
+          trans_status: "0"
+          pay_method: "02"
+          trans_date: "2020-01-10"
+          trans_amount: 1000.0
+          settlement_amount: 400.0
+          fds_fee: 0.0
+          nicepay_fee: 545.0
+          bank_fee: 0.0
+          vat_amount: 55.0
+          order_no: "ordno20200933270"
+          bank_code: "bmri"
+          customer_no: "79150000090933358310"
+
+      - step: "Assert fields applied"
+        action: "assert"
+        target: "settlement"
+        asserts:
+          name:
+            type: "value"
+            expected: "ionpaytest02202001100933358310"
+          settlement_amount:
+            type: "value"
+            expected: 400.0
+          bank_code:
+            type: "value"
+            expected: "bmri"
+          active:
+            type: "value"
+            expected: true
+
+  - name: "Internal user without group_system can only read, not create/write/unlink"
+    steps:
+      - step: "Create restricted user (base.group_user only)"
+        action: "create"
+        model: "res.users"
+        save_as: "plain_user"
+        values:
+          name: "Nicepay Settlement Plain User"
+          login: "nicepay_settlement_plain_user"
+          groups_id:
+            - - 6
+              - 0
+              - - "REF: base.group_user"
+
+      - step: "Create a settlement record as admin (baseline data)"
+        action: "create"
+        model: "nicepay_va_settlement_history"
+        as_user: "base.user_admin"
+        save_as: "settlement"
+        values:
+          name: "TXN-SETTLE-ACL-1"
+          code: "/"
+
+      - step: "Plain user can read the settlement record"
+        action: "call"
+        target: "settlement"
+        method: "read"
+        as_user: "plain_user"
+
+      - step: "Plain user cannot create a settlement record"
+        action: "create"
+        model: "nicepay_va_settlement_history"
+        as_user: "plain_user"
+        expect_error:
+          type: "AccessError"
+        values:
+          name: "TXN-SETTLE-ACL-2"
+          code: "/"
+
+      - step: "Plain user cannot write the settlement record"
+        action: "write"
+        target: "settlement"
+        as_user: "plain_user"
+        expect_error:
+          type: "AccessError"
+        values:
+          note: "hack"
+
+      - step: "Plain user cannot unlink the settlement record"
+        action: "call"
+        target: "settlement"
+        method: "unlink"
+        as_user: "plain_user"
+        expect_error:
+          type: "AccessError"
+
+  - name: "Administration (base.group_system) user has full CRUD access"
+    steps:
+      - step: "Create settlement record as admin"
+        action: "create"
+        model: "nicepay_va_settlement_history"
+        as_user: "base.user_admin"
+        save_as: "settlement"
+        values:
+          name: "TXN-SETTLE-ACL-3"
+          code: "/"
+
+      - step: "Admin can write"
+        action: "write"
+        target: "settlement"
+        as_user: "base.user_admin"
+        values:
+          note: "updated by admin"
+
+      - step: "Assert write applied"
+        action: "assert"
+        target: "settlement"
+        refresh: true
+        asserts:
+          note:
+            type: "value"
+            expected: "updated by admin"
+
+      - step: "Admin can unlink"
+        action: "call"
+        target: "settlement"
+        method: "unlink"
+        as_user: "base.user_admin"
+
+      - step: "Assert record no longer searchable"
+        action: "search"
+        model: "nicepay_va_settlement_history"
+        domain:
+          - ["name", "=", "TXN-SETTLE-ACL-3"]
+        save_as: "deleted_search"
+        expect_count: 0

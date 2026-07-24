@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="nicepay_va_settlement_history_view_search" model="ir.ui.view">
+    <field name="name">nicepay_va_settlement_history - search</field>
+    <field name="model">nicepay_va_settlement_history</field>
+    <field name="inherit_id"
+        ref="ssi_master_data_mixin.mixin_master_data_view_search" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="settlement_date" />
+                <field name="order_no" />
+                <field name="bank_code" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_settlement_history_view_tree" model="ir.ui.view">
+    <field name="name">nicepay_va_settlement_history - tree</field>
+    <field name="model">nicepay_va_settlement_history</field>
+    <field name="inherit_id"
+        ref="ssi_master_data_mixin.mixin_master_data_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//tree/header/button[@name='action_reset_code']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//tree/header/button[@name='action_generate_code']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='code']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="settlement_date" />
+                <field name="trans_date" />
+                <field name="trans_amount" sum="Total Transaction" />
+                <field name="settlement_amount" sum="Total Settlement" />
+                <field name="bank_code" />
+                <field name="order_no" />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_settlement_history_view_form" model="ir.ui.view">
+    <field name="name">nicepay_va_settlement_history - form</field>
+    <field name="model">nicepay_va_settlement_history</field>
+    <field name="inherit_id"
+        ref="ssi_master_data_mixin.mixin_master_data_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//header/button[@name='action_generate_code']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='note']" position="before">
+                <page name="settlement" string="Settlement">
+                    <group name="settlement_columns">
+                        <group name="settlement_group_transaction"
+                            string="Transaction">
+                            <field name="response_code" />
+                            <field name="trans_status" />
+                            <field name="pay_method" />
+                            <field name="bank_code" />
+                            <field name="order_no" />
+                            <field name="customer_no" />
+                        </group>
+                        <group name="settlement_group_amount"
+                            string="Dates &amp; Amounts">
+                            <field name="trans_date" />
+                            <field name="settlement_date" />
+                            <field name="trans_amount" />
+                            <field name="settlement_amount" />
+                            <field name="fds_fee" />
+                            <field name="nicepay_fee" />
+                            <field name="bank_fee" />
+                            <field name="vat_amount" />
+                        </group>
+                    </group>
+                </page>
+                <page name="raw_payload" string="Raw Payload">
+                    <field name="raw_payload" nolabel="1" colspan="4" />
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_settlement_history_action" model="ir.actions.act_window">
+    <field name="name">Settlement Histories</field>
+    <field name="res_model">nicepay_va_settlement_history</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+        id="nicepay_va_settlement_history_menu"
+        parent="menu_nicepay_root"
+        action="nicepay_va_settlement_history_action"
+    />
+</odoo>
