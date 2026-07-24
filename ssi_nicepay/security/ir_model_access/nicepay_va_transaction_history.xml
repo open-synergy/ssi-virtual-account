@@ -7,16 +7,6 @@
     <field name="name">nicepay_va_transaction_history - all</field>
     <field name="model_id" ref="model_nicepay_va_transaction_history" />
     <field name="perm_read" eval="1" />
-    <field name="perm_write" eval="0" />
-    <field name="perm_create" eval="0" />
-    <field name="perm_unlink" eval="0" />
-</record>
-
-<record id="nicepay_va_transaction_history_system_access" model="ir.model.access">
-    <field name="name">nicepay_va_transaction_history - system</field>
-    <field name="model_id" ref="model_nicepay_va_transaction_history" />
-    <field name="group_id" ref="base.group_system" />
-    <field name="perm_read" eval="1" />
     <field name="perm_write" eval="1" />
     <field name="perm_create" eval="1" />
     <field name="perm_unlink" eval="1" />

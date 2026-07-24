@@ -79,3 +79,90 @@ class TestNicepayVaSettlementHistoryMapping(TransactionCase):
         self.assertEqual(settlement.settlement_date, date(2020, 1, 13))
         self.assertEqual(settlement.settlement_amount, 400)
         self.assertEqual(settlement.bank_code, "bmri")
+
+    def test_bank_id_computed_from_bank_code(self):
+        bank = self.env["res.bank"].create(
+            {
+                "name": "Bank Mandiri Test",
+                "nicepay_bank_code": "bmri",
+            }
+        )
+        settlement = self.Settlement.create(
+            self.Settlement._prepare_settlement_data(_SAMPLE_ROW)
+        )
+        self.assertEqual(settlement.bank_id, bank)
+
+    def test_partner_id_computed_from_customer_no_via_virtual_account(self):
+        partner = self.env["res.partner"].create({"name": "Test Settlement Partner"})
+        self.env["res.partner.va"].create(
+            {
+                "partner_id": partner.id,
+                "va_number": "79150000090933358310",
+                "bank_code": "bmri",
+                "provider": "nicepay",
+                "status": "active",
+            }
+        )
+        settlement = self.Settlement.create(
+            self.Settlement._prepare_settlement_data(_SAMPLE_ROW)
+        )
+        self.assertEqual(settlement.partner_id, partner)
+
+    def test_partner_id_empty_when_no_matching_virtual_account(self):
+        settlement = self.Settlement.create(
+            self.Settlement._prepare_settlement_data(_SAMPLE_ROW)
+        )
+        self.assertFalse(settlement.partner_id)
+
+    def test_action_generate_fields_handles_multiple_records(self):
+        row_1 = dict(_SAMPLE_ROW, txid="TXID-MULTI-1")
+        row_2 = dict(_SAMPLE_ROW, txid="TXID-MULTI-2")
+        first = self.Settlement.create(
+            {"name": row_1["txid"], "code": "/", "raw_payload": json.dumps(row_1)}
+        )
+        second = self.Settlement.create(
+            {"name": row_2["txid"], "code": "/", "raw_payload": json.dumps(row_2)}
+        )
+
+        (first + second).action_generate_fields()
+
+        self.assertEqual(first.bank_code, "bmri")
+        self.assertEqual(second.bank_code, "bmri")
+
+    def test_records_are_ordered_by_create_date_desc(self):
+        first = self.Settlement.create(
+            self.Settlement._prepare_settlement_data(
+                dict(_SAMPLE_ROW, txid="TXID-ORDER-1")
+            )
+        )
+        second = self.Settlement.create(
+            self.Settlement._prepare_settlement_data(
+                dict(_SAMPLE_ROW, txid="TXID-ORDER-2")
+            )
+        )
+
+        found = self.Settlement.search([("id", "in", [first.id, second.id])])
+        self.assertEqual(
+            found.ids,
+            [second.id, first.id],
+            "default order must be newest create_date first",
+        )
+
+    def test_generate_fields_repopulates_from_raw_payload(self):
+        # Create with only the raw payload (as if imported bare, without
+        # going through _prepare_settlement_data), then regenerate.
+        settlement = self.Settlement.create(
+            {
+                "name": "ionpaytest02202001100933358310",
+                "code": "/",
+                "raw_payload": json.dumps(_SAMPLE_ROW),
+            }
+        )
+        self.assertFalse(settlement.bank_code)
+
+        settlement.action_generate_fields()
+
+        self.assertEqual(settlement.settlement_date, date(2020, 1, 13))
+        self.assertEqual(settlement.settlement_amount, 400)
+        self.assertEqual(settlement.bank_code, "bmri")
+        self.assertEqual(settlement.customer_no, "79150000090933358310")

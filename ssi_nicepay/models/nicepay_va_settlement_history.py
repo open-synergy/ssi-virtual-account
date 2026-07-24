@@ -24,6 +24,7 @@ class NicepayVaSettlementHistory(models.Model):
     _inherit = ["mixin.master_data"]
     _description = "Nicepay VA Settlement History"
     _field_name_string = "Transaction ID"
+    _order = "create_date desc, id desc"
 
     code = fields.Char(
         default="/",
@@ -114,6 +115,54 @@ class NicepayVaSettlementHistory(models.Model):
             "to be re-derived."
         ),
     )
+    bank_id = fields.Many2one(
+        string="# Bank",
+        comodel_name="res.bank",
+        compute="_compute_bank_id",
+        store=True,
+        compute_sudo=True,
+        help="Bank matching this settlement's bank code against res.bank.nicepay_bank_code.",
+    )
+    partner_id = fields.Many2one(
+        string="# Partner",
+        comodel_name="res.partner",
+        compute="_compute_partner_id",
+        store=True,
+        compute_sudo=True,
+        help=(
+            "Customer partner matching this settlement's 'customer_no' "
+            "against the partner's registered virtual account number "
+            "(res.partner.va.va_number) -- customer_no is a VA number, "
+            "not a res.partner.bank account."
+        ),
+    )
+
+    @api.depends("bank_code")
+    def _compute_bank_id(self):
+        Bank = self.env["res.bank"]
+        for record in self:
+            record.bank_id = (
+                Bank.search([("nicepay_bank_code", "=", record.bank_code)], limit=1)
+                if record.bank_code
+                else False
+            )
+
+    @api.depends("customer_no")
+    def _compute_partner_id(self):
+        PartnerVa = self.env["res.partner.va"]
+        for record in self:
+            va = (
+                PartnerVa.search(
+                    [
+                        ("va_number", "=", record.customer_no),
+                        ("status", "=", "active"),
+                    ],
+                    limit=1,
+                )
+                if record.customer_no
+                else PartnerVa.browse()
+            )
+            record.partner_id = va.partner_id
 
     @api.model
     def _parse_nicepay_date(self, value):
@@ -156,3 +205,20 @@ class NicepayVaSettlementHistory(models.Model):
             "customer_no": row.get("customer_no"),
             "raw_payload": json.dumps(row),
         }
+
+    def _get_raw_payload(self):
+        """Return this settlement's stored raw payload as a dict.
+
+        :rtype: dict
+        """
+        self.ensure_one()
+        return json.loads(self.raw_payload)
+
+    def action_generate_fields(self):
+        for record in self.sudo():
+            record._generate_fields()
+
+    def _generate_fields(self):
+        """(Re)populate the structured fields above from the raw payload."""
+        self.ensure_one()
+        self.write(self._prepare_settlement_data(self._get_raw_payload()))

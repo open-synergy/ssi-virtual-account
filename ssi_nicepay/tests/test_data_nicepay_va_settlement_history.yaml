@@ -1,7 +1,9 @@
 scenarios:
   - name: "Create Nicepay VA Settlement History - defaults"
     steps:
-      - step: "Create a settlement record directly (mirrors what the on-site settlement job will do)"
+      - step:
+          "Create a settlement record directly (mirrors what the on-site settlement job
+          will do)"
         action: "create"
         model: "nicepay_va_settlement_history"
         save_as: "settlement"
@@ -40,9 +42,10 @@ scenarios:
             type: "value"
             expected: true
 
-  - name: "Internal user without group_system can only read, not create/write/unlink"
+  - name:
+      "Any internal user has full CRUD access (single open ACL, no group restriction)"
     steps:
-      - step: "Create restricted user (base.group_user only)"
+      - step: "Create plain internal user (base.group_user only)"
         action: "create"
         model: "res.users"
         save_as: "plain_user"
@@ -54,47 +57,36 @@ scenarios:
               - 0
               - - "REF: base.group_user"
 
-      - step: "Create a settlement record as admin (baseline data)"
+      - step: "Plain user can create a settlement record"
         action: "create"
         model: "nicepay_va_settlement_history"
-        as_user: "base.user_admin"
+        as_user: "plain_user"
         save_as: "settlement"
         values:
           name: "TXN-SETTLE-ACL-1"
           code: "/"
 
-      - step: "Plain user can read the settlement record"
-        action: "call"
-        target: "settlement"
-        method: "read"
-        as_user: "plain_user"
-
-      - step: "Plain user cannot create a settlement record"
-        action: "create"
-        model: "nicepay_va_settlement_history"
-        as_user: "plain_user"
-        expect_error:
-          type: "AccessError"
-        values:
-          name: "TXN-SETTLE-ACL-2"
-          code: "/"
-
-      - step: "Plain user cannot write the settlement record"
+      - step: "Plain user can write the settlement record"
         action: "write"
         target: "settlement"
         as_user: "plain_user"
-        expect_error:
-          type: "AccessError"
         values:
-          note: "hack"
+          note: "updated by plain user"
 
-      - step: "Plain user cannot unlink the settlement record"
+      - step: "Assert write applied"
+        action: "assert"
+        target: "settlement"
+        refresh: true
+        asserts:
+          note:
+            type: "value"
+            expected: "updated by plain user"
+
+      - step: "Plain user can unlink the settlement record"
         action: "call"
         target: "settlement"
         method: "unlink"
         as_user: "plain_user"
-        expect_error:
-          type: "AccessError"
 
   - name: "Administration (base.group_system) user has full CRUD access"
     steps:

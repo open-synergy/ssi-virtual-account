@@ -1,14 +1,18 @@
 scenarios:
   - name: "Create Nicepay VA Transaction History - defaults"
     steps:
-      - step: "Create a notification record directly (mirrors what the webhook controller does on receipt)"
+      - step:
+          "Create a notification record directly (mirrors what the webhook controller
+          does on receipt)"
         action: "create"
         model: "nicepay_va_transaction_history"
         save_as: "notif"
         values:
           name: "TXN-YAML-1"
           code: "/"
-          payload: '{"tXid": "TXN-YAML-1", "billingNm": "Yaml Test Partner", "amt": "10000", "transDt": "20260724", "bankCd": "014"}'
+          payload:
+            '{"tXid": "TXN-YAML-1", "billingNm": "Yaml Test Partner", "amt": "10000",
+            "transDt": "20260724", "bankCd": "014"}'
 
       - step: "Assert defaults applied"
         action: "assert"
@@ -30,9 +34,10 @@ scenarios:
             type: "value"
             expected: false
 
-  - name: "Internal user without group_system can only read, not create/write/unlink"
+  - name:
+      "Any internal user has full CRUD access (single open ACL, no group restriction)"
     steps:
-      - step: "Create restricted user (base.group_user only)"
+      - step: "Create plain internal user (base.group_user only)"
         action: "create"
         model: "res.users"
         save_as: "plain_user"
@@ -44,49 +49,37 @@ scenarios:
               - 0
               - - "REF: base.group_user"
 
-      - step: "Create a notification as admin (baseline data)"
+      - step: "Plain user can create a notification"
         action: "create"
         model: "nicepay_va_transaction_history"
-        as_user: "base.user_admin"
+        as_user: "plain_user"
         save_as: "notif"
         values:
           name: "TXN-YAML-2"
           code: "/"
           payload: '{"tXid": "TXN-YAML-2"}'
 
-      - step: "Plain user can read the notification"
-        action: "call"
-        target: "notif"
-        method: "read"
-        as_user: "plain_user"
-
-      - step: "Plain user cannot create a notification"
-        action: "create"
-        model: "nicepay_va_transaction_history"
-        as_user: "plain_user"
-        expect_error:
-          type: "AccessError"
-        values:
-          name: "TXN-YAML-3"
-          code: "/"
-          payload: '{"tXid": "TXN-YAML-3"}'
-
-      - step: "Plain user cannot write the notification"
+      - step: "Plain user can write the notification"
         action: "write"
         target: "notif"
         as_user: "plain_user"
-        expect_error:
-          type: "AccessError"
         values:
-          note: "hack"
+          note: "updated by plain user"
 
-      - step: "Plain user cannot unlink the notification"
+      - step: "Assert write applied"
+        action: "assert"
+        target: "notif"
+        refresh: true
+        asserts:
+          note:
+            type: "value"
+            expected: "updated by plain user"
+
+      - step: "Plain user can unlink the notification"
         action: "call"
         target: "notif"
         method: "unlink"
         as_user: "plain_user"
-        expect_error:
-          type: "AccessError"
 
   - name: "Administration (base.group_system) user has full CRUD access"
     steps:
