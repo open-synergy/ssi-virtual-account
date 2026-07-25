@@ -1,0 +1,153 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ssi_virtual_account
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ssi_virtual_account
+#: model_terms:ir.ui.view,arch_db:ssi_virtual_account.view_partner_form
+msgid "Accounting-related settings are managed on"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields.selection,name:ssi_virtual_account.selection__res_partner_va__status__active
+msgid "Active"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model,name:ssi_virtual_account.model_res_bank
+msgid "Bank"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model,name:ssi_virtual_account.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__bank_code
+msgid "Bank Code"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model,name:ssi_virtual_account.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner__va_customer_id
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_users__va_customer_id
+msgid "Customer ID"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_bank__display_name
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner__display_name
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_bank__display_name
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields.selection,name:ssi_virtual_account.selection__res_partner_va__status__expired
+msgid "Expired"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_bank__id
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner__id
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_bank__id
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__id
+msgid "ID"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields.selection,name:ssi_virtual_account.selection__res_partner_va__status__inactive
+msgid "Inactive"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_bank____last_update
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner____last_update
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_bank____last_update
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model,name:ssi_virtual_account.model_res_partner_va
+msgid "Partner Virtual Account"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__provider
+msgid "Provider"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__status
+msgid "Status"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model_terms:ir.ui.view,arch_db:ssi_virtual_account.view_partner_form
+msgid "Sync VA"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner_va__va_number
+msgid "Va Number"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: code:addons/ssi_virtual_account/models/res_partner_bank.py:0
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_partner__virtual_account_ids
+#: model:ir.model.fields,field_description:ssi_virtual_account.field_res_users__virtual_account_ids
+#: model_terms:ir.ui.view,arch_db:ssi_virtual_account.view_partner_form
+#, python-format
+msgid "Virtual Account"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model:ir.model.constraint,message:ssi_virtual_account.constraint_res_partner_va_uniq_partner_provider_va
+msgid "Virtual Account must be unique per provider"
+msgstr ""
+
+#. module: ssi_virtual_account
+#: model_terms:ir.ui.view,arch_db:ssi_virtual_account.view_partner_form
+msgid "the parent company"
+msgstr ""
