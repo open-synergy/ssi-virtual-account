@@ -1,0 +1,945 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ssi_nicepay
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__bank_id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__bank_id
+msgid "# Bank"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_config_settings__nicepay_journal_id
+msgid "# Journal"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__partner_id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__partner_id
+msgid "# Partner"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__payment_id
+msgid "# Payment"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_needaction
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__active
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__active
+msgid "Active"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_ids
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_exception_decoration
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_state
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_type_icon
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__amount
+msgid "Amount"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_attachment_count
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: ssi_nicepay
+#: code:addons/ssi_nicepay/models/nicepay_va_settlement_history.py:0
+#: code:addons/ssi_nicepay/models/nicepay_va_transaction_history.py:0
+#, python-format
+msgid "Automatic \"Generate Fields\" failed on creation: %s"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model,name:ssi_nicepay.model_res_bank
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_search
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Bank"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__bank_code
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__bank_code
+msgid "Bank Code"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__bank_fee
+msgid "Bank Fee"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__bank_code
+msgid "Bank code ('bank_cd') of the paying bank."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__bank_fee
+msgid "Bank fee charged for this transaction ('bank_fee')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__bank_id
+msgid ""
+"Bank matching the notification payload's bank code ('bankCd') against "
+"res.bank.nicepay_bank_code."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__bank_id
+msgid ""
+"Bank matching this settlement's bank code against "
+"res.bank.nicepay_bank_code."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__billing_name
+msgid "Billing Name"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__bypass_merchant_token_check
+msgid "Bypass Merchant Token Check"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Bypass Merchant Token Check Enabled"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__code
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__code
+msgid "Code"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model,name:ssi_nicepay.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__create_uid
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__create_date
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__currency
+msgid "Currency"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__currency
+msgid "Currency code ('currency') of the transaction, e.g. IDR."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__customer_no
+msgid "Customer No"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__partner_id
+msgid ""
+"Customer partner matching the notification payload's billing name "
+"('billingNm')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__partner_id
+msgid ""
+"Customer partner matching this settlement's 'customer_no' against the "
+"partner's registered virtual account number (res.partner.va.va_number) -- "
+"customer_no is a VA number, not a res.partner.bank account."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__customer_no
+msgid ""
+"Customer/account transaction number ('customer_no') reported by Nicepay."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__trans_datetime
+msgid ""
+"Date and time of the transaction, combined from the notification's separate "
+"'transDt' (date) and 'transTm' (time) fields."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__vacct_valid_datetime
+msgid ""
+"Date and time the virtual account is valid until, combined from the "
+"notification's separate 'vacctValidDt' (date) and 'vacctValidTm' (time) "
+"fields."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__processed_date
+msgid "Date and time this notification was last successfully processed."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__trans_date
+msgid "Date the original transaction ('trans_dt') was made."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__settlement_date
+msgid "Date this transaction was settled by Nicepay ('settlmnt_dt')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_form
+msgid "Dates & Amounts"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Detail"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__display_name
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__display_name
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_bank__display_name
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields.selection,name:ssi_nicepay.selection__nicepay_va_transaction_history__state__done
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Done"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields.selection,name:ssi_nicepay.selection__nicepay_va_transaction_history__state__draft
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Draft"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Error"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__error_message
+msgid "Error Message"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__error_message
+msgid ""
+"Exception message captured the last time processing this notification "
+"failed. Cleared once processing succeeds."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__fds_fee
+msgid "FDS Fee"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields.selection,name:ssi_nicepay.selection__nicepay_va_transaction_history__state__failed
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Failed"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_follower_ids
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_channel_ids
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_channel_ids
+msgid "Followers (Channels)"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_partner_ids
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__activity_type_icon
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__fds_fee
+msgid "Fraud Detection System fee charged by Nicepay ('fds_fee')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.actions.server,name:ssi_nicepay.nicepay_va_settlement_history_generate_fields_server_action
+#: model:ir.actions.server,name:ssi_nicepay.nicepay_va_transaction_history_generate_fields_server_action
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_tree
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_tree
+msgid "Generate Fields"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_tree
+msgid ""
+"Generate fields from payload for selected notification(s). Are you sure?"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_tree
+msgid "Generate fields from raw payload for selected record(s). Are you sure?"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__goods_name
+msgid "Goods Name"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__goods_name
+msgid ""
+"Goods/description name ('goodsNm') associated with the virtual account."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_search
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Group By"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_bank__id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_config_settings__id
+msgid "ID"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_exception_icon
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__activity_exception_icon
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__message_needaction
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__message_unread
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__message_needaction
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__message_unread
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__message_has_error
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__instmnt_mon
+msgid "Installment Month"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__instmnt_type
+msgid "Installment Type"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__instmnt_type
+msgid "Installment type code ('instmntType') reported by Nicepay."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_is_follower
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.res_config_settings_view_form
+msgid "Journal"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history____last_update
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history____last_update
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_bank____last_update
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_config_settings____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__write_uid
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__write_date
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_main_attachment_id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_main_attachment_id
+msgid "Main Attachment"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__active
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__active
+msgid ""
+"Master data status\n"
+"\n"
+"* Inactive data can not be selected when creating new transaction\n"
+"* Transaction with inactive master data can still be viewed\n"
+"* Set master data as inactive if master data no longger needed,\n"
+"but master data already used on transaction"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__code
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__code
+msgid ""
+"Master data unique identifier.\n"
+"\n"
+"* Fill with '/' if You do not need unique identifier\n"
+"* Click 'Generate Code' button to automatically assign code.\n"
+"  Sequence template mush be set to perform this action\n"
+"  Only master data with '/' code will be assign automatic code"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__match_cl
+msgid "Match Class"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__match_cl
+msgid "Match class code ('matchCl') reported by Nicepay."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_config_settings__nicepay_merchant_id
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.res_config_settings_view_form
+msgid "Merchant ID"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_config_settings__nicepay_merchant_key
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.res_config_settings_view_form
+msgid "Merchant Key"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__merchant_token
+msgid "Merchant Token"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__order_no
+msgid ""
+"Merchant order reference number ('order_no') for the original transaction."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_has_error
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_ids
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__my_activity_date_deadline
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__name
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__name
+msgid "Name"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__billing_name
+msgid "Name of the payer ('billingNm') as reported by the paying bank."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__settlement_amount
+msgid "Net amount settled to the merchant in IDR ('settlmnt_amt')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_date_deadline
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_summary
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_type_id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.ui.menu,name:ssi_nicepay.menu_nicepay_root
+msgid "Nicepay"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_res_bank__nicepay_bank_code
+msgid "Nicepay Code"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.res_config_settings_view_form
+msgid "Nicepay Configuration"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__nicepay_fee
+msgid "Nicepay Fee"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model,name:ssi_nicepay.model_nicepay_va_settlement_history
+msgid "Nicepay VA Settlement History"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model,name:ssi_nicepay.model_nicepay_va_transaction_history
+msgid "Nicepay VA Transaction History"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__bank_code
+msgid "Nicepay bank code ('bankCd') of the paying bank."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__merchant_token
+msgid "Nicepay merchant token ('merchantToken') for this notification."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__reference_no
+msgid "Nicepay reference number ('referenceNo') for this notification."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__nicepay_fee
+msgid "Nicepay service fee charged for this transaction ('nicepay_fee')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__notification_status
+msgid "Nicepay transaction status code ('status') for this notification."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__note
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__note
+msgid "Note"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Notification"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__notification_status
+msgid "Notification Status"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_needaction_counter
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_has_error_counter
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__instmnt_mon
+msgid "Number of installment months ('instmntMon') reported by Nicepay."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__message_needaction_counter
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__message_has_error_counter
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__message_unread_counter
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__message_unread_counter
+msgid "Number of unread messages"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__order_no
+msgid "Order No"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__trans_amount
+msgid "Original transaction amount in IDR ('trans_amt')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_search
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Partner"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__pay_method
+msgid "Pay Method"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__payload
+msgid "Payload"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__pay_method
+msgid "Payment Method"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__pay_method
+msgid "Payment method code ('payMethod') used by the payer."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__pay_method
+msgid "Payment method code ('pay_method') used for the original transaction."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__payment_id
+msgid ""
+"Payment record created from this notification once processing succeeds."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Process Notification"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__processed_date
+msgid "Processed Date"
+msgstr ""
+
+#. module: ssi_nicepay
+#: code:addons/ssi_nicepay/models/nicepay_va_transaction_history.py:0
+#, python-format
+msgid ""
+"Processed with merchant token verification bypassed: this notification's "
+"signature did not match, but was processed anyway because \"Bypass Merchant "
+"Token Check\" is enabled."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__state
+msgid ""
+"Processing status of this notification: Draft = not yet processed, Done = "
+"payment successfully created, Failed = processing raised an error, see Error"
+" Message."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__payload
+msgid ""
+"Raw HTTP POST parameters sent by Nicepay for this VA notification, stored as"
+" JSON exactly as received. This field is never modified after creation, "
+"regardless of whether processing succeeds or fails."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__raw_payload
+msgid ""
+"Raw JSON of this settlement data row exactly as returned by Nicepay's "
+"Settlement History API, kept for audit and troubleshooting in case the "
+"structured fields above ever need to be re-derived."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__raw_payload
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Raw Payload"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__reference_no
+msgid "Reference No"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__response_code
+msgid "Response Code"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__activity_user_id
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_form
+msgid "Settlement"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__settlement_amount
+msgid "Settlement Amount"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__settlement_date
+msgid "Settlement Date"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.actions.act_window,name:ssi_nicepay.nicepay_va_settlement_history_action
+#: model:ir.ui.menu,name:ssi_nicepay.nicepay_va_settlement_history_menu
+msgid "Settlement Histories"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__state
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "State"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__activity_state
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_tree
+msgid "Total Amount"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_tree
+msgid "Total Settlement"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_tree
+msgid "Total Transaction"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_settlement_history_view_form
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Transaction"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__trans_amount
+msgid "Transaction Amount"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__trans_date
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__trans_datetime
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_search
+msgid "Transaction Date"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.actions.act_window,name:ssi_nicepay.nicepay_va_transaction_history_action
+#: model:ir.ui.menu,name:ssi_nicepay.nicepay_va_transaction_history_menu
+msgid "Transaction Histories"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__trans_status
+msgid "Transaction Status"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__amount
+msgid "Transaction amount in IDR ('amt')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__response_code
+msgid ""
+"Transaction response code ('code') reported by Nicepay for this settlement "
+"row."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__trans_status
+msgid "Transaction status code ('trans_status') reported by Nicepay."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__activity_exception_decoration
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_unread
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_unread
+msgid "Unread Messages"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__message_unread_counter
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__vacct_valid_datetime
+msgid "VA Valid Until"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__vat_amount
+msgid "VAT Amount"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__vat_amount
+msgid "VAT/PPN charged on the fees for this transaction ('vat')."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model_terms:ir.ui.view,arch_db:ssi_nicepay.nicepay_va_transaction_history_view_form
+msgid "Virtual Account"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__vacct_no
+msgid "Virtual Account No"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__vacct_no
+msgid "Virtual account number ('vacctNo') that was paid."
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_settlement_history__website_message_ids
+#: model:ir.model.fields,field_description:ssi_nicepay.field_nicepay_va_transaction_history__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_settlement_history__website_message_ids
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: ssi_nicepay
+#: model:ir.model.fields,help:ssi_nicepay.field_nicepay_va_transaction_history__bypass_merchant_token_check
+msgid ""
+"When enabled, \"Process Notification\" proceeds even if this notification's "
+"merchantToken signature does not match, instead of being marked Failed. Only"
+" enable this after you have manually confirmed the notification is genuinely"
+" from Nicepay (e.g. it fails re-verification only because "
+"nicepay.merchant_key was rotated after this notification was originally "
+"received) -- bypassing this check accepts an unauthenticated payload as-is, "
+"so use with caution."
+msgstr ""
