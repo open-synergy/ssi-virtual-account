@@ -1,0 +1,124 @@
+scenarios:
+  - name: "Create Nicepay VA Transaction History - defaults"
+    steps:
+      - step:
+          "Create a notification record directly (mirrors what the webhook controller
+          does on receipt)"
+        action: "create"
+        model: "nicepay_va_transaction_history"
+        save_as: "notif"
+        values:
+          name: "TXN-YAML-1"
+          code: "/"
+          payload:
+            '{"tXid": "TXN-YAML-1", "billingNm": "Yaml Test Partner", "amt": "10000",
+            "transDt": "20260724", "bankCd": "014"}'
+
+      - step: "Assert defaults applied"
+        action: "assert"
+        target: "notif"
+        asserts:
+          state:
+            type: "value"
+            expected: "draft"
+          active:
+            type: "value"
+            expected: true
+          error_message:
+            type: "value"
+            expected: false
+          payment_id:
+            type: "m2o"
+            expected: false
+          processed_date:
+            type: "value"
+            expected: false
+
+  - name:
+      "Any internal user has full CRUD access (single open ACL, no group restriction)"
+    steps:
+      - step: "Create plain internal user (base.group_user only)"
+        action: "create"
+        model: "res.users"
+        save_as: "plain_user"
+        values:
+          name: "Nicepay Notification Plain User"
+          login: "nicepay_notification_plain_user"
+          groups_id:
+            - - 6
+              - 0
+              - - "REF: base.group_user"
+
+      - step: "Plain user can create a notification"
+        action: "create"
+        model: "nicepay_va_transaction_history"
+        as_user: "plain_user"
+        save_as: "notif"
+        values:
+          name: "TXN-YAML-2"
+          code: "/"
+          payload: '{"tXid": "TXN-YAML-2"}'
+
+      - step: "Plain user can write the notification"
+        action: "write"
+        target: "notif"
+        as_user: "plain_user"
+        values:
+          note: "updated by plain user"
+
+      - step: "Assert write applied"
+        action: "assert"
+        target: "notif"
+        refresh: true
+        asserts:
+          note:
+            type: "value"
+            expected: "updated by plain user"
+
+      - step: "Plain user can unlink the notification"
+        action: "call"
+        target: "notif"
+        method: "unlink"
+        as_user: "plain_user"
+
+  - name: "Administration (base.group_system) user has full CRUD access"
+    steps:
+      - step: "Create notification as admin"
+        action: "create"
+        model: "nicepay_va_transaction_history"
+        as_user: "base.user_admin"
+        save_as: "notif"
+        values:
+          name: "TXN-YAML-4"
+          code: "/"
+          payload: '{"tXid": "TXN-YAML-4"}'
+
+      - step: "Admin can write"
+        action: "write"
+        target: "notif"
+        as_user: "base.user_admin"
+        values:
+          note: "updated by admin"
+
+      - step: "Assert write applied"
+        action: "assert"
+        target: "notif"
+        refresh: true
+        asserts:
+          note:
+            type: "value"
+            expected: "updated by admin"
+
+      - step: "Admin can unlink"
+        action: "call"
+        target: "notif"
+        method: "unlink"
+        as_user: "base.user_admin"
+
+      - step: "Assert record no longer searchable"
+        action: "search"
+        model: "nicepay_va_transaction_history"
+        domain:
+          - ["name", "=", "TXN-YAML-4"]
+        save_as: "deleted_search"
+        expect_count: 0

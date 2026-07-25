@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 OpenSynergy Indonesia
+     Copyright 2026 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<record id="nicepay_va_transaction_history_view_search" model="ir.ui.view">
+    <field name="name">nicepay_va_transaction_history - search</field>
+    <field name="model">nicepay_va_transaction_history</field>
+    <field
+            name="inherit_id"
+            ref="ssi_master_data_mixin.mixin_master_data_view_search"
+        />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="state" />
+                <field name="bank_id" />
+                <field name="partner_id" />
+            </xpath>
+            <xpath expr="//group[@name='dom_active']" position="before">
+                <filter
+                        name="dom_draft"
+                        string="Draft"
+                        domain="[('state', '=', 'draft')]"
+                    />
+                <filter
+                        name="dom_done"
+                        string="Done"
+                        domain="[('state', '=', 'done')]"
+                    />
+                <filter
+                        name="dom_failed"
+                        string="Failed"
+                        domain="[('state', '=', 'failed')]"
+                    />
+                <separator />
+                <filter
+                        name="dom_bypass_merchant_token_check"
+                        string="Bypass Merchant Token Check Enabled"
+                        domain="[('bypass_merchant_token_check', '=', True)]"
+                    />
+                <separator />
+            </xpath>
+            <xpath expr="//group[@name='dom_active']" position="after">
+                <group expand="0" string="Group By">
+                    <filter
+                            name="groupby_state"
+                            string="State"
+                            context="{'group_by': 'state'}"
+                        />
+                    <filter
+                            name="groupby_bank_id"
+                            string="Bank"
+                            context="{'group_by': 'bank_id'}"
+                        />
+                    <filter
+                            name="groupby_partner_id"
+                            string="Partner"
+                            context="{'group_by': 'partner_id'}"
+                        />
+                    <filter
+                            name="groupby_trans_datetime"
+                            string="Transaction Date"
+                            context="{'group_by': 'trans_datetime:day'}"
+                        />
+                </group>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_transaction_history_view_tree" model="ir.ui.view">
+    <field name="name">nicepay_va_transaction_history - tree</field>
+    <field name="model">nicepay_va_transaction_history</field>
+    <field name="inherit_id" ref="ssi_master_data_mixin.mixin_master_data_view_tree" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath
+                    expr="//tree/header/button[@name='action_reset_code']"
+                    position="attributes"
+                >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
+                    expr="//tree/header/button[@name='action_generate_code']"
+                    position="attributes"
+                >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//tree/header" position="inside">
+                <button
+                        name="action_generate_fields"
+                        type="object"
+                        string="Generate Fields"
+                        confirm="Generate fields from payload for selected notification(s). Are you sure?"
+                    />
+            </xpath>
+            <xpath expr="//field[@name='code']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="partner_id" />
+                <field name="bank_id" />
+                <field name="amount" sum="Total Amount" />
+                <field name="trans_datetime" />
+                <field name="create_date" />
+            </xpath>
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='active']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='active']" position="after">
+                <field
+                        name="state"
+                        widget="badge"
+                        decoration-success="state == 'done'"
+                        decoration-danger="state == 'failed'"
+                        decoration-info="state == 'draft'"
+                    />
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_transaction_history_view_form" model="ir.ui.view">
+    <field name="name">nicepay_va_transaction_history - form</field>
+    <field name="model">nicepay_va_transaction_history</field>
+    <field name="inherit_id" ref="ssi_master_data_mixin.mixin_master_data_view_form" />
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <data>
+            <xpath
+                    expr="//header/button[@name='action_generate_code']"
+                    position="attributes"
+                >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
+                    expr="//header/button[@name='action_generate_code']"
+                    position="after"
+                >
+                <button
+                        name="action_process_notification"
+                        string="Process Notification"
+                        type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('state', '=', 'done')]}"
+                    />
+                <button
+                        name="action_generate_fields"
+                        string="Generate Fields"
+                        type="object"
+                    />
+                <field
+                        name="state"
+                        widget="badge"
+                        decoration-success="state == 'done'"
+                        decoration-danger="state == 'failed'"
+                        decoration-info="state == 'draft'"
+                    />
+            </xpath>
+            <xpath expr="//notebook/page[@name='note']" position="before">
+                <page name="detail" string="Detail">
+                    <group name="detail_columns">
+                        <group name="detail_group_transaction" string="Transaction">
+                            <field name="reference_no" />
+                            <field name="pay_method" />
+                            <field name="bank_code" />
+                            <field name="billing_name" />
+                            <field name="goods_name" />
+                            <field name="currency" />
+                            <field name="notification_status" />
+                            <field name="match_cl" />
+                        </group>
+                        <group name="detail_group_va" string="Virtual Account">
+                            <field name="vacct_no" />
+                            <field name="amount" />
+                            <field name="trans_datetime" />
+                            <field name="vacct_valid_datetime" />
+                            <field name="instmnt_type" />
+                            <field name="instmnt_mon" />
+                            <field name="merchant_token" />
+                        </group>
+                    </group>
+                </page>
+                <page name="notification" string="Notification">
+                    <group name="notification_group_1">
+                        <field
+                                name="payment_id"
+                                attrs="{'invisible': [('payment_id', '=', False)]}"
+                            />
+                        <field
+                                name="processed_date"
+                                attrs="{'invisible': [('processed_date', '=', False)]}"
+                            />
+                        <field
+                                name="bypass_merchant_token_check"
+                                widget="boolean_toggle"
+                                attrs="{'invisible': [('state', '=', 'done')]}"
+                            />
+                    </group>
+                    <group
+                            name="notification_group_2"
+                            string="Error"
+                            attrs="{'invisible': [('error_message', '=', False)]}"
+                        >
+                        <field name="error_message" nolabel="1" colspan="4" />
+                    </group>
+                    <group name="notification_group_3" string="Raw Payload">
+                        <field name="payload" nolabel="1" colspan="4" />
+                    </group>
+                </page>
+            </xpath>
+        </data>
+    </field>
+</record>
+
+<record id="nicepay_va_transaction_history_action" model="ir.actions.act_window">
+    <field name="name">Transaction Histories</field>
+    <field name="res_model">nicepay_va_transaction_history</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<record
+        id="nicepay_va_transaction_history_generate_fields_server_action"
+        model="ir.actions.server"
+    >
+    <field name="name">Generate Fields</field>
+    <field name="model_id" ref="model_nicepay_va_transaction_history" />
+    <field name="binding_model_id" ref="model_nicepay_va_transaction_history" />
+    <field name="binding_view_types">list,form</field>
+    <field name="state">code</field>
+    <field name="code">records.action_generate_fields()</field>
+</record>
+
+<menuitem
+        id="nicepay_va_transaction_history_menu"
+        parent="menu_nicepay_root"
+        action="nicepay_va_transaction_history_action"
+        groups="base.group_system"
+    />
+</odoo>
