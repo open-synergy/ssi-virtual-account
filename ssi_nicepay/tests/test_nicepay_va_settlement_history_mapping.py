@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import json
 from datetime import date
+from unittest import mock
 
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -148,9 +149,10 @@ class TestNicepayVaSettlementHistoryMapping(TransactionCase):
             "default order must be newest create_date first",
         )
 
-    def test_generate_fields_repopulates_from_raw_payload(self):
+    def test_fields_are_generated_automatically_from_raw_payload_on_create(self):
         # Create with only the raw payload (as if imported bare, without
-        # going through _prepare_settlement_data), then regenerate.
+        # going through _prepare_settlement_data): fields must already be
+        # generated, with no need to click "Generate Fields" manually.
         settlement = self.Settlement.create(
             {
                 "name": "ionpaytest02202001100933358310",
@@ -158,11 +160,37 @@ class TestNicepayVaSettlementHistoryMapping(TransactionCase):
                 "raw_payload": json.dumps(_SAMPLE_ROW),
             }
         )
-        self.assertFalse(settlement.bank_code)
 
+        self.assertEqual(settlement.settlement_date, date(2020, 1, 13))
+        self.assertEqual(settlement.settlement_amount, 400)
+        self.assertEqual(settlement.bank_code, "bmri")
+        self.assertEqual(settlement.customer_no, "79150000090933358310")
+
+        # calling it again manually must remain safe/idempotent
         settlement.action_generate_fields()
 
         self.assertEqual(settlement.settlement_date, date(2020, 1, 13))
         self.assertEqual(settlement.settlement_amount, 400)
         self.assertEqual(settlement.bank_code, "bmri")
         self.assertEqual(settlement.customer_no, "79150000090933358310")
+
+    def test_no_fields_generated_on_create_without_raw_payload(self):
+        settlement = self.Settlement.create({"name": "/", "code": "/"})
+        self.assertFalse(settlement.bank_code)
+        self.assertFalse(settlement.settlement_date)
+
+    def test_create_survives_generate_fields_failure(self):
+        # raw_payload is kept specifically for audit/troubleshooting; a bug
+        # in automatic field generation on create must not be allowed to
+        # abort create() and take the just-imported row down with it.
+        row = dict(_SAMPLE_ROW, txid="TXID-GENFIELD-CRASH")
+        with mock.patch.object(
+            type(self.Settlement), "_generate_fields", side_effect=Exception("boom")
+        ):
+            settlement = self.Settlement.create(
+                {"name": row["txid"], "code": "/", "raw_payload": json.dumps(row)}
+            )
+
+        self.assertTrue(settlement.id)
+        self.assertEqual(json.loads(settlement.raw_payload), row)
+        self.assertFalse(settlement.bank_code)

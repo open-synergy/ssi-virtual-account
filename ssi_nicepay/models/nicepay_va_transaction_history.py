@@ -4,9 +4,16 @@
 import hashlib
 import hmac
 import json
+import logging
 from datetime import datetime
 
-from odoo import api, fields, models
+import pytz
+
+from odoo import _, api, fields, models
+
+NICEPAY_TIMEZONE = pytz.timezone("Asia/Jakarta")
+
+_logger = logging.getLogger(__name__)
 
 
 class NicepayVaTransactionHistory(models.Model):
@@ -19,6 +26,15 @@ class NicepayVaTransactionHistory(models.Model):
     processing fails. The "Process Notification" button lets an
     administrator retry the processing once the underlying issue (e.g. a
     misconfigured system parameter) has been fixed.
+
+    At most one record is kept per tXid *when received through the
+    webhook* (see ``_create_or_reuse_notification()``): a resent/duplicate
+    notification reuses the existing record for that tXid instead of
+    creating another row, so this table stays safe to build SQL views on
+    without needing to de-duplicate it downstream. This reuse rule is
+    deliberately not part of ``create()`` itself, which behaves like any
+    other Odoo model (always inserts a new row) for any other caller --
+    manual creation via the UI, "Duplicate", imports, etc.
     """
 
     _name = "nicepay_va_transaction_history"
@@ -163,6 +179,21 @@ class NicepayVaTransactionHistory(models.Model):
         readonly=True,
         help="Match class code ('matchCl') reported by Nicepay.",
     )
+    bypass_merchant_token_check = fields.Boolean(
+        string="Bypass Merchant Token Check",
+        default=False,
+        copy=False,
+        help=(
+            'When enabled, "Process Notification" proceeds even if this '
+            "notification's merchantToken signature does not match, "
+            "instead of being marked Failed. Only enable this after you "
+            "have manually confirmed the notification is genuinely from "
+            "Nicepay (e.g. it fails re-verification only because "
+            "nicepay.merchant_key was rotated after this notification was "
+            "originally received) -- bypassing this check accepts an "
+            "unauthenticated payload as-is, so use with caution."
+        ),
+    )
     bank_id = fields.Many2one(
         string="# Bank",
         comodel_name="res.bank",
@@ -208,6 +239,110 @@ class NicepayVaTransactionHistory(models.Model):
                 else False
             )
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Populate the structured fields from ``payload`` right away.
+
+        Structured fields are generated automatically as soon as a record
+        is created, instead of requiring an admin to click "Generate
+        Fields" manually. The button remains available to re-derive the
+        fields later (e.g. after a malformed value in the original
+        payload has been understood/fixed).
+
+        This is standard Odoo ``create()`` behavior otherwise -- it always
+        inserts a new row. The tXid de-duplication used by the webhook
+        (see ``_create_or_reuse_notification()``) is intentionally kept
+        out of here: overriding the generic ``create()`` to sometimes
+        return an existing record instead of a new one would surprise any
+        other caller (manual creation via the UI, "Duplicate", imports,
+        ...), which all expect ``create()`` to always insert.
+        """
+        records = super().create(vals_list)
+        for record in records.sudo():
+            record._generate_fields_on_create()
+        return records
+
+    @api.model
+    def _create_or_reuse_notification(self, payload):
+        """Find or create the single record for this notification's tXid.
+
+        This is the webhook's entry point (used instead of calling
+        ``create()`` directly): at most one record is kept per tXid so
+        downstream consumers (e.g. SQL views built for reporting) never
+        need to de-duplicate this table themselves. A tXid already
+        ``done`` is reused untouched (already successfully processed,
+        nothing left to redo); a tXid still ``draft``/``failed`` absorbs
+        the freshly received payload into that same record instead of
+        creating a duplicate row, so it can be (re)processed.
+
+        :param dict payload: Raw request parameters received from Nicepay.
+        :return: The single record for this tXid.
+        :rtype: recordset
+        """
+        vals = self._prepare_notification_data(payload)
+        existing = self._find_existing_by_txid(vals.get("name"))
+        if existing:
+            return existing._reuse_for_resend(vals)
+        return self.create(vals)
+
+    def _find_existing_by_txid(self, name):
+        """Find the existing record for a tXid ('name'), if any.
+
+        :param str name: tXid to look up. The "/" placeholder used when a
+            payload lacks a tXid is deliberately never matched, so several
+            such records can coexist without being merged into one.
+        :return: The existing record for this tXid, or an empty recordset.
+        :rtype: recordset
+        """
+        return (
+            self.search([("name", "=", name)], limit=1)
+            if name and name != "/"
+            else self.browse()
+        )
+
+    def _reuse_for_resend(self, vals):
+        """Absorb a freshly received ``vals`` into this existing record.
+
+        A record already ``done`` is left untouched (already successfully
+        processed, nothing left to redo); any other record absorbs the new
+        payload so it can be (re)processed.
+
+        :param dict vals: Freshly received ``create()`` values for this
+            tXid, as built by ``_prepare_notification_data``.
+        :return: This record.
+        :rtype: recordset
+        """
+        self.ensure_one()
+        if self.state != "done":
+            self.write(dict(vals, error_message=False))
+            self.sudo()._generate_fields_on_create()
+        return self
+
+    def _generate_fields_on_create(self):
+        """Best-effort ``_generate_fields()`` call, tolerant of failure.
+
+        This whole model exists to guarantee the raw payload is never
+        lost, even when downstream processing fails -- so a bug in field
+        generation (e.g. an unexpected payload shape) must not be allowed
+        to abort ``create()`` and take the just-received payload down with
+        it. Only the field-generation attempt is rolled back (via a
+        savepoint) on failure; the record itself, with its raw payload
+        intact, is left for "Generate Fields" to be retried manually later.
+        """
+        self.ensure_one()
+        try:
+            with self.env.cr.savepoint():
+                self._generate_fields()
+        except Exception as exc:  # noqa: BLE001
+            _logger.exception(
+                "nicepay_va_transaction_history #%s: automatic field "
+                "generation on create failed, raw payload is preserved",
+                self.id,
+            )
+            self.message_post(
+                body=_('Automatic "Generate Fields" failed on creation: %s') % exc
+            )
+
     @api.model
     def _prepare_notification_data(self, payload):
         """Build ``create()`` values for a newly received notification.
@@ -241,19 +376,33 @@ class NicepayVaTransactionHistory(models.Model):
         Fields" action over one bad field, an unparseable date/time is
         treated as unknown so the other fields still get populated.
 
+        Nicepay reports this date/time in Indonesian local time (WIB,
+        ``Asia/Jakarta``, UTC+7), while Odoo ``Datetime`` fields are
+        always stored as UTC and converted to each user's timezone only
+        when displayed. Storing the naive local value as-is would make it
+        display 7 hours ahead of what Nicepay actually sent, so it is
+        converted to UTC here before being returned.
+
         :param str date_str: Date in ``YYYYMMDD`` format, or falsy.
         :param str time_str: Time in ``HHMMSS`` format, defaults to
             midnight if falsy.
-        :return: Combined datetime, or ``False`` if ``date_str`` is falsy
-            or unparseable.
+        :return: Combined datetime converted to UTC, or ``False`` if
+            ``date_str`` is falsy or unparseable.
         :rtype: datetime.datetime or bool
         """
         if not date_str:
             return False
         try:
-            return datetime.strptime(date_str + (time_str or "000000"), "%Y%m%d%H%M%S")
+            naive_local = datetime.strptime(
+                date_str + (time_str or "000000"), "%Y%m%d%H%M%S"
+            )
         except ValueError:
             return False
+        return (
+            NICEPAY_TIMEZONE.localize(naive_local)
+            .astimezone(pytz.utc)
+            .replace(tzinfo=None)
+        )
 
     def _prepare_generated_fields(self, payload):
         """Build ``write()`` values mapping the payload onto structured fields.
@@ -389,7 +538,8 @@ class NicepayVaTransactionHistory(models.Model):
         The notification's ``merchantToken`` signature is verified first;
         a mismatch (forged/spoofed request, or wrong merchant credentials
         configured) marks this record as ``failed`` without ever
-        attempting to create a payment.
+        attempting to create a payment, unless an administrator has
+        explicitly enabled ``bypass_merchant_token_check`` on this record.
         """
         self.ensure_one()
         if self.state == "done":
@@ -397,16 +547,26 @@ class NicepayVaTransactionHistory(models.Model):
 
         payload = self._get_payload()
         if not self._verify_merchant_token(payload):
-            self.write(
-                {
-                    "state": "failed",
-                    "error_message": (
-                        "Invalid merchantToken: notification signature does "
-                        "not match. This notification was not processed."
-                    ),
-                }
+            if not self.bypass_merchant_token_check:
+                self.write(
+                    {
+                        "state": "failed",
+                        "error_message": (
+                            "Invalid merchantToken: notification signature "
+                            "does not match. This notification was not "
+                            "processed."
+                        ),
+                    }
+                )
+                return
+            self.message_post(
+                body=_(
+                    "Processed with merchant token verification bypassed: "
+                    "this notification's signature did not match, but was "
+                    'processed anyway because "Bypass Merchant Token '
+                    'Check" is enabled.'
+                )
             )
-            return
 
         existing_payment = self._find_existing_payment(payload)
         if existing_payment:

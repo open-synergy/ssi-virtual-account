@@ -2,9 +2,12 @@
 # Copyright 2026 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import json
+import logging
 from datetime import datetime
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class NicepayVaSettlementHistory(models.Model):
@@ -163,6 +166,48 @@ class NicepayVaSettlementHistory(models.Model):
                 else PartnerVa.browse()
             )
             record.partner_id = va.partner_id
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Populate the structured fields from ``raw_payload`` right away.
+
+        This covers both the normal creation path (already going through
+        ``_prepare_settlement_data``, so this is a harmless no-op re-derive)
+        and a bare import that only sets ``raw_payload`` -- either way, the
+        structured fields end up populated without an admin needing to
+        click "Generate Fields" manually. The button remains available to
+        re-derive the fields later if needed.
+        """
+        records = super().create(vals_list)
+        for record in records.sudo():
+            if record.raw_payload:
+                record._generate_fields_on_create()
+        return records
+
+    def _generate_fields_on_create(self):
+        """Best-effort ``_generate_fields()`` call, tolerant of failure.
+
+        ``raw_payload`` is kept specifically for audit/troubleshooting, so
+        a bug in field generation (e.g. an unexpected row shape) must not
+        be allowed to abort ``create()`` and take the just-imported row
+        down with it. Only the field-generation attempt is rolled back
+        (via a savepoint) on failure; the record itself, with its raw
+        payload intact, is left for "Generate Fields" to be retried
+        manually later.
+        """
+        self.ensure_one()
+        try:
+            with self.env.cr.savepoint():
+                self._generate_fields()
+        except Exception as exc:  # noqa: BLE001
+            _logger.exception(
+                "nicepay_va_settlement_history #%s: automatic field "
+                "generation on create failed, raw payload is preserved",
+                self.id,
+            )
+            self.message_post(
+                body=_('Automatic "Generate Fields" failed on creation: %s') % exc
+            )
 
     @api.model
     def _parse_nicepay_date(self, value):

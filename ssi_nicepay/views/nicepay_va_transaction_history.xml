@@ -35,6 +35,12 @@
                         domain="[('state', '=', 'failed')]"
                     />
                 <separator />
+                <filter
+                        name="dom_bypass_merchant_token_check"
+                        string="Bypass Merchant Token Check Enabled"
+                        domain="[('bypass_merchant_token_check', '=', True)]"
+                    />
+                <separator />
             </xpath>
             <xpath expr="//group[@name='dom_active']" position="after">
                 <group expand="0" string="Group By">
@@ -190,6 +196,11 @@
                         <field
                                 name="processed_date"
                                 attrs="{'invisible': [('processed_date', '=', False)]}"
+                            />
+                        <field
+                                name="bypass_merchant_token_check"
+                                widget="boolean_toggle"
+                                attrs="{'invisible': [('state', '=', 'done')]}"
                             />
                     </group>
                     <group

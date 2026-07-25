@@ -4,6 +4,7 @@
 import hashlib
 import json
 from datetime import datetime
+from unittest import mock
 
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
@@ -75,8 +76,9 @@ class TestNicepayVaTransactionHistoryProcessing(TransactionCase):
         return payload
 
     def _create_notification(self, payload):
-        vals = self.Notification._prepare_notification_data(payload)
-        return self.Notification.create(vals)
+        # Mirrors what the webhook controller does on receipt: this goes
+        # through _create_or_reuse_notification(), not create() directly.
+        return self.Notification._create_or_reuse_notification(payload)
 
     # ------------------------------------------------------------------
     # _prepare_notification_data — pure seam, no ORM writes besides create
@@ -124,8 +126,10 @@ class TestNicepayVaTransactionHistoryProcessing(TransactionCase):
     # ------------------------------------------------------------------
 
     def test_combine_nicepay_datetime_merges_date_and_time(self):
+        # Nicepay reports WIB (Asia/Jakarta, UTC+7); the result must be
+        # converted to UTC for storage in a Datetime field.
         combined = self.Notification._combine_nicepay_datetime("20260724", "113628")
-        self.assertEqual(combined, datetime(2026, 7, 24, 11, 36, 28))
+        self.assertEqual(combined, datetime(2026, 7, 24, 4, 36, 28))
 
     def test_combine_nicepay_datetime_returns_false_when_no_date(self):
         self.assertFalse(self.Notification._combine_nicepay_datetime(False, "113628"))
@@ -149,6 +153,21 @@ class TestNicepayVaTransactionHistoryProcessing(TransactionCase):
         self.assertEqual(notif.bank_code, "014")
         self.assertEqual(notif.reference_no, "REF-1")
 
+    def test_create_survives_generate_fields_failure(self):
+        # This model exists to guarantee the raw payload is never lost;
+        # a bug in automatic field generation on create must not be
+        # allowed to abort create() and take the payload down with it.
+        payload = self._make_payload(tXid="TXN-GENFIELD-CRASH")
+        with mock.patch.object(
+            type(self.Notification), "_generate_fields", side_effect=Exception("boom")
+        ):
+            notif = self._create_notification(payload)
+
+        self.assertTrue(notif.id)
+        self.assertEqual(json.loads(notif.payload), payload)
+        self.assertFalse(notif.merchant_token)
+        self.assertEqual(notif.state, "draft")
+
     def test_generate_fields_populates_structured_fields(self):
         payload = self._make_payload(tXid="TXN-GENERATE", amt="250000")
         notif = self._create_notification(payload)
@@ -159,8 +178,9 @@ class TestNicepayVaTransactionHistoryProcessing(TransactionCase):
         self.assertEqual(notif.pay_method, "02")
         self.assertEqual(notif.amount, 250000.0)
         self.assertEqual(notif.vacct_no, "1234567890")
-        self.assertEqual(notif.trans_datetime, datetime(2026, 7, 24, 11, 36, 28))
-        self.assertEqual(notif.vacct_valid_datetime, datetime(2026, 7, 31, 23, 59, 59))
+        # Payload times are WIB (UTC+7); stored value must be UTC.
+        self.assertEqual(notif.trans_datetime, datetime(2026, 7, 24, 4, 36, 28))
+        self.assertEqual(notif.vacct_valid_datetime, datetime(2026, 7, 31, 16, 59, 59))
         self.assertEqual(notif.instmnt_type, "0")
         self.assertEqual(notif.instmnt_mon, "1")
         self.assertEqual(notif.currency, "IDR")
@@ -224,6 +244,31 @@ class TestNicepayVaTransactionHistoryProcessing(TransactionCase):
             raw_payload,
             "the original (forged) payload must still be kept for audit purposes",
         )
+
+    def test_process_notification_bypasses_invalid_merchant_token_when_enabled(self):
+        raw_payload = self._make_payload(
+            tXid="TXN-BYPASS", merchantToken="not-the-real-token"
+        )
+        notif = self._create_notification(raw_payload)
+        notif.bypass_merchant_token_check = True
+
+        notif._process_notification()
+
+        self.assertEqual(notif.state, "done")
+        self.assertTrue(notif.payment_id)
+        self.assertFalse(notif.error_message)
+
+    def test_process_notification_still_fails_when_bypass_disabled(self):
+        raw_payload = self._make_payload(
+            tXid="TXN-NOBYPASS", merchantToken="not-the-real-token"
+        )
+        notif = self._create_notification(raw_payload)
+        self.assertFalse(notif.bypass_merchant_token_check)
+
+        notif._process_notification()
+
+        self.assertEqual(notif.state, "failed")
+        self.assertFalse(notif.payment_id)
 
     # ------------------------------------------------------------------
     # _process_notification — failure path must keep the raw payload intact
@@ -296,33 +341,82 @@ class TestNicepayVaTransactionHistoryProcessing(TransactionCase):
             len(payments), 1, "reprocessing a done record must not create a duplicate"
         )
 
-    def test_resending_same_txid_in_a_new_record_links_existing_payment(self):
-        # Simulate Nicepay resending the exact same notification: a
-        # SEPARATE nicepay_va_transaction_history record is created (each
-        # HTTP call gets its own audit record), but the tXid is identical
-        # to one already paid.
+    def test_create_does_not_dedupe_unlike_the_webhook_entry_point(self):
+        # Unlike _create_or_reuse_notification() (used by the webhook),
+        # calling create() directly -- as manual creation via the UI,
+        # "Duplicate", or an import would -- must behave like standard
+        # Odoo create(): always insert a new row, even if the name
+        # happens to collide with an existing record.
+        vals = self.Notification._prepare_notification_data(
+            self._make_payload(tXid="TXN-MANUAL-DUP")
+        )
+        first = self.Notification.create(vals)
+        second = self.Notification.create(vals)
+
+        self.assertNotEqual(first.id, second.id)
+        self.assertEqual(
+            self.Notification.search_count([("name", "=", "TXN-MANUAL-DUP")]),
+            2,
+        )
+
+    def test_resending_same_txid_reuses_the_done_record_unchanged(self):
+        # Simulate Nicepay resending the exact same notification for a
+        # tXid that has already been successfully processed: at most one
+        # row per tXid must ever exist in this table (so it stays safe to
+        # build SQL views on), so the second "arrival" must reuse the
+        # existing done record rather than creating another row.
         first = self._create_notification(self._make_payload(tXid="TXN-REPLAY"))
         first._process_notification()
         self.assertEqual(first.state, "done")
         payment = first.payment_id
 
         second = self._create_notification(self._make_payload(tXid="TXN-REPLAY"))
-        second._process_notification()
 
-        self.assertEqual(second.state, "done")
         self.assertEqual(
-            second.payment_id,
-            payment,
-            "a resent notification for an already-paid tXid must link to "
-            "the existing payment, not create a duplicate",
+            second.id,
+            first.id,
+            "a resent notification for an already-'done' tXid must reuse "
+            "the existing record, never create a duplicate row",
         )
-        payments = self.env["account.payment"].search([("ref", "=", "TXN-REPLAY")])
+        self.assertEqual(second.payment_id, payment)
         self.assertEqual(
-            len(payments),
+            self.Notification.search_count([("name", "=", "TXN-REPLAY")]),
             1,
-            "resending a notification for the same tXid must never create "
-            "a second payment",
+            "at most one record must ever exist per tXid",
         )
+
+    def test_resending_same_txid_reuses_and_updates_a_not_done_record(self):
+        # A tXid that hasn't been successfully processed yet (still draft
+        # or failed) must still only ever have one row -- a resend absorbs
+        # the freshly received payload into the same record instead of
+        # creating a duplicate.
+        first_payload = self._make_payload(
+            tXid="TXN-RETRY", merchantToken="not-the-real-token"
+        )
+        first = self._create_notification(first_payload)
+        first._process_notification()
+        self.assertEqual(first.state, "failed")
+
+        second_payload = self._make_payload(tXid="TXN-RETRY")
+        second = self._create_notification(second_payload)
+
+        self.assertEqual(
+            second.id,
+            first.id,
+            "a resent notification for a not-yet-done tXid must reuse the "
+            "existing record, never create a duplicate row",
+        )
+        self.assertEqual(json.loads(second.payload), second_payload)
+        self.assertEqual(second.state, "draft")
+        self.assertFalse(second.error_message)
+        self.assertEqual(
+            self.Notification.search_count([("name", "=", "TXN-RETRY")]),
+            1,
+            "at most one record must ever exist per tXid",
+        )
+
+        second._process_notification()
+        self.assertEqual(second.state, "done")
 
     def test_action_process_notification_rejects_multiple_records(self):
         first = self._create_notification(self._make_payload(tXid="TXN-MULTI-1"))

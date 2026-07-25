@@ -19,9 +19,7 @@ class NicepayEndpoint(http.Controller):
         Notification = request.env["nicepay_va_transaction_history"].sudo()
         payload = dict(request.params)
 
-        notification = Notification.create(
-            Notification._prepare_notification_data(payload)
-        )
+        notification = Notification._create_or_reuse_notification(payload)
         # Commit immediately: the raw payload must survive even if
         # processing below crashes unexpectedly.
         request.env.cr.commit()
