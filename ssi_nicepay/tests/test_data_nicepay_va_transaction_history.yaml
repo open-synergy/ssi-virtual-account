@@ -81,6 +81,105 @@ scenarios:
         method: "unlink"
         as_user: "plain_user"
 
+  - name: "Partner matched via billingNm despite HTML-entity-encoded ampersand"
+    steps:
+      - step: "Create partner whose name contains a plain ampersand"
+        action: "create"
+        model: "res.partner"
+        save_as: "amp_partner"
+        values:
+          name: "Toko Aman & Sentosa"
+
+      - step:
+          "Create a notification whose payload billingNm is the HTML-entity-encoded form
+          of the partner's name"
+        action: "create"
+        model: "nicepay_va_transaction_history"
+        save_as: "notif_amp"
+        values:
+          name: "TXN-YAML-AMP-1"
+          code: "/"
+          payload:
+            '{"tXid": "TXN-YAML-AMP-1", "billingNm": "Toko Aman &amp; Sentosa", "amt":
+            "10000", "transDt": "20260724", "bankCd": "014"}'
+
+      - step: "Assert partner_id matched despite the encoded ampersand"
+        action: "assert"
+        target: "notif_amp"
+        asserts:
+          partner_id:
+            type: "m2o"
+            expected: "REC: amp_partner"
+
+  - name:
+      "Partner left empty when HTML-entity-decoded billingNm still matches no partner"
+    steps:
+      - step:
+          "Create a notification whose decoded billingNm matches no existing partner"
+        action: "create"
+        model: "nicepay_va_transaction_history"
+        save_as: "notif_amp_nomatch"
+        values:
+          name: "TXN-YAML-AMP-2"
+          code: "/"
+          payload:
+            '{"tXid": "TXN-YAML-AMP-2", "billingNm": "No Such Partner &amp; Co", "amt":
+            "10000", "transDt": "20260724", "bankCd": "014"}'
+
+      - step: "Assert partner_id stays empty, not an error"
+        action: "assert"
+        target: "notif_amp_nomatch"
+        asserts:
+          partner_id:
+            type: "m2o"
+            expected: false
+
+  - name:
+      "Generate Fields recomputes partner_id for a record created before the matching
+      partner existed"
+    steps:
+      - step:
+          "Create a notification whose billingNm entity-decodes to a partner that does
+          not exist yet (mirrors an old record whose match failed before this fix)"
+        action: "create"
+        model: "nicepay_va_transaction_history"
+        save_as: "notif_regen"
+        values:
+          name: "TXN-YAML-AMP-3"
+          code: "/"
+          payload:
+            '{"tXid": "TXN-YAML-AMP-3", "billingNm": "Toko Baru &amp; Segar", "amt":
+            "10000", "transDt": "20260724", "bankCd": "014"}'
+
+      - step: "Assert partner_id is initially empty (no matching partner exists yet)"
+        action: "assert"
+        target: "notif_regen"
+        asserts:
+          partner_id:
+            type: "m2o"
+            expected: false
+
+      - step: "Now create the partner whose name matches the decoded billingNm"
+        action: "create"
+        model: "res.partner"
+        save_as: "regen_partner"
+        values:
+          name: "Toko Baru & Segar"
+
+      - step: "Regenerate fields on the old record"
+        action: "call"
+        target: "notif_regen"
+        method: "action_generate_fields"
+
+      - step: "Assert partner_id is now filled after Generate Fields"
+        action: "assert"
+        target: "notif_regen"
+        refresh: true
+        asserts:
+          partner_id:
+            type: "m2o"
+            expected: "REC: regen_partner"
+
   - name: "Administration (base.group_system) user has full CRUD access"
     steps:
       - step: "Create notification as admin"

@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import hashlib
 import hmac
+import html
 import json
 import logging
 from datetime import datetime
@@ -14,6 +15,22 @@ from odoo import _, api, fields, models
 NICEPAY_TIMEZONE = pytz.timezone("Asia/Jakarta")
 
 _logger = logging.getLogger(__name__)
+
+
+def _unescape_billing_name(value):
+    """Decode HTML entities (e.g. ``&amp;``) in a Nicepay billing name.
+
+    Some banks/Nicepay HTML-entity-encode ``billingNm`` before sending it
+    (observed with ``&`` becoming ``&amp;``), while partner names in Odoo
+    use the plain character. Decoding here is only meant to make the
+    partner *search* below entity-insensitive -- it must never be used to
+    alter any value that is actually stored (``billing_name``, ``payload``).
+
+    :param str value: Raw ``billingNm`` value, or falsy.
+    :return: ``value`` with HTML entities decoded, unchanged if falsy.
+    :rtype: str or None
+    """
+    return html.unescape(value) if value else value
 
 
 class NicepayVaTransactionHistory(models.Model):
@@ -230,12 +247,20 @@ class NicepayVaTransactionHistory(models.Model):
 
     @api.depends("payload")
     def _compute_partner_id(self):
+        """Match the payload's billing name against an existing partner.
+
+        The billing name is passed through
+        ``_unescape_billing_name()`` before the search so an
+        HTML-entity-encoded value (e.g. ``&amp;``) from the payload
+        still matches a partner name using the plain character.
+        """
         Partner = self.env["res.partner"]
         for record in self:
             billing_name = record.payload and record._get_payload().get("billingNm")
+            search_name = _unescape_billing_name(billing_name)
             record.partner_id = (
-                Partner.search([("name", "=", billing_name)], limit=1)
-                if billing_name
+                Partner.search([("name", "=", search_name)], limit=1)
+                if search_name
                 else False
             )
 
@@ -438,9 +463,27 @@ class NicepayVaTransactionHistory(models.Model):
             record._generate_fields()
 
     def _generate_fields(self):
-        """Populate the structured fields above from the stored payload."""
+        """Populate the structured fields above from the stored payload.
+
+        ``bank_id``/``partner_id`` are stored compute fields depending
+        only on ``payload`` (``@api.depends("payload")``), and the
+        ``write()`` below never touches ``payload`` itself, so Odoo
+        never schedules them for recompute as a side effect of this
+        write. Left alone, a record whose match originally failed
+        (e.g. an un-decoded HTML entity in ``billingNm`` before this
+        fix existed) would stay empty forever, even after "Generate
+        Fields" is used to fix it -- defeating the whole point of that
+        button. Calling both compute methods directly forces them to
+        re-run and persist their new value. ``invalidate_cache()`` is
+        deliberately NOT used here instead: for a ``store=True`` field
+        it only discards the cached value, so the record would simply
+        reread the same stale value back from the database rather than
+        recomputing it.
+        """
         self.ensure_one()
         self.write(self._prepare_generated_fields(self._get_payload()))
+        self._compute_bank_id()
+        self._compute_partner_id()
 
     def _verify_merchant_token(self, payload):
         """Verify the notification's ``merchantToken`` signature.

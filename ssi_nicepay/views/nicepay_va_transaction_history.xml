@@ -171,6 +171,7 @@
                             <field name="pay_method" />
                             <field name="bank_code" />
                             <field name="billing_name" />
+                            <field name="partner_id" />
                             <field name="goods_name" />
                             <field name="currency" />
                             <field name="notification_status" />
